@@ -9,8 +9,8 @@ const Hero = () => {
       <div className={styles.content}>
         <h1 className={styles.title}>Hi, I am Deepjyoti</h1>
         <p className={styles.description}>
-          I am a full-stack developer with 5 years of experience using React and
-          NodeJS. Reach out if you would like to learn more!
+          I am a full-stack developer(MERN) with experience using React, NextJS
+          NodeJS, NestJs and MongoDB. Reach out if you would like to learn more!
         </p>
         <a href="mailto:kdeepjyoti311@email.com" className={styles.contactBtn}>
           Contact Me
