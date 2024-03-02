@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Portfolio Project",
+    "imageSrc": "projects/project.png",
+    "description": "This is personal portfoli project.",
+    "skills": ["React", "CSS", "JavaScript"],
+    "demo": "https://www.example.com",
+    "source": "https://www.github.com"
+  },
+  {
+    "title": "Visranta",
+    "imageSrc": "projects/project.png",
+    "description": "This is a hotel booking front-end based project.",
+    "skills": ["HTML", "CSS", "JavaScript"],
+    "demo": "https://www.example.com",
+    "source": "https://github.com/deepjyoti24/Hotel_website"
+  },
+  {
+    "title": "Number Plate Detection System",
+    "imageSrc": "projects/project.png",
+    "description": "This is a computer vision based project to detect number plates of vhicles.",
+    "skills": ["Python", "OpenCV", "OCR"],
+    "demo": "https://www.example.com",
+    "source": "https://github.com/deepjyoti24/Number-Plate-Detection"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "role": "Software Engineer Intern",
+    "organisation": "IIIANA STUDIO",
+    "startDate": "Sept, 2023",
+    "endDate": "Present",
+    "experiences": ["Working on Dognation's web application", "develoing frontend UI components using NextJS and Taildwind CSS and also developing backend API's using NestJs a NodeJs Framwork"],
+    "imageSrc": "history/IIIANALogo.jpg"
+  }
+]
