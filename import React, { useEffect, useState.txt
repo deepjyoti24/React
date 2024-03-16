@@ -1,0 +1,438 @@
+import React, { useEffect, useState } from "react";
+import { Avatar, Checkbox, Input, select } from "@nextui-org/react";
+import {
+  CapacityByOccupancy,
+  CapacityMatrix,
+  OccupancyType,
+  SelectedServiceModelInCenter,
+  ServiceCapacity,
+} from "@/lib/model/center.model";
+import { DogSize } from "@/lib/model/subscription.model";
+import { id } from "inversify";
+
+interface ServiceData {
+  id: string;
+  name: string;
+  avatar: string;
+  startPrice: string;
+}
+
+export const SelectServiceItemInCenter = ({
+  serviceData,
+  includedServices,
+  retData,
+}: {
+  serviceData: ServiceData;
+  includedServices: SelectedServiceModelInCenter[];
+  retData: any;
+}) => {
+  const [serviceCapacity, setServiceCapacity] = useState<ServiceCapacity>();
+  const [slotCapacity, setSlotCapacity] = useState(0);
+  const [soloCapacity, setSoloCapacity] = useState(0);
+  const [smAndMdCapacity, setSmAndMdCapacity] = useState(0);
+  const [lgAndXlCapacity, setLgAndXlCapacity] = useState(0);
+  const [isSelected, setIsSelected] = useState(false);
+  const [slot, setSlot] = useState(false);
+  const [occupancy, setOccupancy] = useState(false);
+  const [solo, setSolo] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [capacityMatrix, setCapacityMatrix] = useState<CapacityMatrix[]>([]);
+
+  let smAndMdSizeMatrix = ["sm", "md"];
+  const lgAndXLSizeMatrix = ["lg", "xl"];
+
+  // useEffect(() => {
+  //   const thisServiceCapacity: ServiceCapacity = {};
+  //   const thisCapacityByOccupancy: CapacityByOccupancy[] = [];
+  //   const thisCapacityMatrix: CapacityMatrix[] = [];
+  //   const thisDogSize: DogSize[] = [];
+
+  //   const thisServceInSub = includedServices.find(
+  //     (el) => serviceData.id === el.id
+  //   );
+
+  //   if (thisServceInSub !== undefined) {
+  //     const capacityBySlot = thisServceInSub.serviceCapacity.capacityBySlot;
+  //     if (capacityBySlot) {
+  //       thisServiceCapacity.capacityBySlot = capacityBySlot;
+  //       setServiceCapacity(thisServiceCapacity);
+  //     }
+
+  //     const capacitybyOccupancy =
+  //       thisServceInSub.serviceCapacity.capacityByOccupancy;
+  //     if (capacitybyOccupancy) {
+  //       const sharedOccupancy = capacitybyOccupancy.find(
+  //         (el) => el.occupancyType === OccupancyType.SHARED
+  //       );
+
+  //       if (sharedOccupancy) {
+
+  //         const capacityMatrix = sharedOccupancy.capacityMatrix;
+  //         if (capacityMatrix) {
+  //           const smAndMdCapacity = capacityMatrix.find(
+  //             (el) =>
+  //               el.sizeCombination.includes(DogSize.small) &&
+  //               el.sizeCombination.includes(DogSize.medium)
+  //           );
+  //           const lgAndXlCapacity = capacityMatrix.find(
+  //             (el) =>
+  //               el.sizeCombination.includes(DogSize.large) &&
+  //               el.sizeCombination.includes(DogSize.extraLarge)
+  //           );
+          
+
+  //           if (smAndMdCapacity) {
+  //             const capacityForSmAndMd = smAndMdCapacity.capacity;
+  //             thisCapacityMatrix.push({ sizeCombination : [DogSize.small, DogSize.medium], capacity : capacityForSmAndMd})
+  //           }
+  //           if (lgAndXlCapacity) {
+  //             const capacityForLgAndXl = lgAndXlCapacity.capacity
+  //             thisCapacityMatrix.push({sizeCombination : [DogSize.large, DogSize.extraLarge], capacity : capacityForLgAndXl})
+  //           }
+  //           thisCapacityByOccupancy.push({
+  //           occupancyType : OccupancyType.SHARED,
+  //           capacityMatrix: thisCapacityMatrix,
+  //          })
+  //         }
+  //       }
+
+  //       const soloOccupancy = capacitybyOccupancy.find(
+  //         (el) => el.occupancyType === OccupancyType.SOLO
+  //       );
+  //       if (soloOccupancy) {
+
+  //         const soloCapacity = soloOccupancy.capacityMatrix[0].capacity;
+  //         const sizeMatrix = Object.values(DogSize)
+  //         thisCapacityMatrix.push({sizeCombination: sizeMatrix, capacity: soloCapacity})
+  //         thisCapacityByOccupancy.push({
+  //           occupancyType: OccupancyType.SOLO,
+  //           capacityMatrix: thisCapacityMatrix
+  //         })
+  //       }
+  //       thisServiceCapacity.capacityByOccupancy = thisCapacityByOccupancy
+  //       setServiceCapacity(thisServiceCapacity)
+  //     }
+  //   }
+  // }, [serviceData, includedServices]);
+
+    useEffect(() => {
+    const thisServiceInSub = includedServices.find(
+      (el) => serviceData.id === el.id
+    );
+
+    if (thisServiceInSub !== undefined) {
+      const capacityBySlot = thisServiceInSub.serviceCapacity.capacityBySlot;
+      if (capacityBySlot) {
+        setServiceCapacity({ ...serviceCapacity, capacityBySlot });
+      }
+
+      const capacityByOccupancy =
+        thisServiceInSub.serviceCapacity.capacityByOccupancy;
+      if (capacityByOccupancy) {
+        setServiceCapacity({ ...serviceCapacity, capacityByOccupancy });
+      }
+    }
+  }, [includedServices, serviceCapacity, serviceData]);
+
+  useEffect(() => {
+
+    const thisServceInSub = includedServices.find(
+      (el) => serviceData.id === el.id
+    );
+
+    if (thisServceInSub !== undefined) {
+      const capacityBySlot = thisServceInSub.serviceCapacity.capacityBySlot;
+      if (capacityBySlot) {
+        setSlot(true);
+        setSlotCapacity(capacityBySlot);
+      }
+      const capacitybyOccupancy =
+        thisServceInSub.serviceCapacity.capacityByOccupancy;
+      if (capacitybyOccupancy) {
+        setOccupancy(true);
+
+        const sharedOccupancy = capacitybyOccupancy.find(
+          (el) => el.occupancyType === OccupancyType.SHARED
+        );
+
+        if (sharedOccupancy) {
+          setShared(true);
+          const capacityMatrix = sharedOccupancy.capacityMatrix;
+          if (capacityMatrix) {
+            const smAndMdCapacity = capacityMatrix.find(
+              (el) =>
+                el.sizeCombination.includes(DogSize.small) &&
+                el.sizeCombination.includes(DogSize.medium)
+            );
+            const lgAndXlCapacity = capacityMatrix.find(
+              (el) =>
+                el.sizeCombination.includes(DogSize.large) &&
+                el.sizeCombination.includes(DogSize.extraLarge)
+            );
+            console.log(smAndMdCapacity);
+
+            if (smAndMdCapacity) {
+              setSmAndMdCapacity(smAndMdCapacity.capacity);
+            }
+            if (lgAndXlCapacity) {
+              setLgAndXlCapacity(lgAndXlCapacity.capacity);
+            }
+          }
+        }
+
+        const soloOccupancy = capacitybyOccupancy.find(
+          (el) => el.occupancyType === OccupancyType.SOLO
+        );
+        if (soloOccupancy) {
+          setSolo(true);
+          const soloCapacity = soloOccupancy.capacityMatrix[0].capacity;
+          setSoloCapacity(soloCapacity);
+        }
+      }
+    }
+
+    setIsSelected(includedServices.map((el) => el.id).includes(serviceData.id));
+  }, [includedServices, serviceData]);
+
+    const handleCapacityChange = (updatedCapacity: ServiceCapacity) => {
+    setServiceCapacity(updatedCapacity);
+
+    retData({
+      id: serviceData.id,
+      serviceCapacity: updatedCapacity,
+      selected: isSelected,
+    });
+  };
+
+  return (
+    <div className="shadow-md rounded-lg bg-white p-4">
+      <div className="">
+        <Checkbox
+          isSelected={isSelected}
+          aria-label={serviceData.name}
+          onChange={(e) => {
+            setIsSelected(e.target.checked);
+            console.log({
+              id: serviceData.id,
+              capacity: serviceCapacity,
+              selected: e.target.checked,
+            });
+
+            retData({
+              id: serviceData.id,
+              capacity: serviceCapacity,
+              selected: e.target.checked,
+            });
+          }}
+        >
+          <div className="w-full flex justify-between gap-2 items-center">
+            <Avatar
+              size="md"
+              radius="sm"
+              className="shadow-2xl p-1 bg-[#F6FFFF]"
+              src={serviceData.avatar}
+            />
+            <div className="flex flex-col py-4 font-semibold">
+              <div>{serviceData.name}</div>
+              <div className="text-small text-gray-500 font-normal">
+                Starts from ₹ {serviceData.startPrice}
+              </div>
+            </div>
+          </div>
+        </Checkbox>
+      </div>
+
+      <div className="flex items-center pl-6 gap-4">
+        <div>
+          Capacity
+          <div className="rounded-md shadow-md mt-4 p-5 bg-slate-50">
+            <div className="basis-3/4 flex gap-10 justify-start">
+              <Checkbox
+                id="occupancy"
+                isSelected={occupancy}
+                onValueChange={(val) => {
+                  setOccupancy(val);
+                }}
+              >
+                Ocuppancy
+              </Checkbox>
+              <Checkbox
+                id="slot"
+                isSelected={slot ? true : false}
+                onValueChange={(val) => {
+                  setSlot(val);
+                }}
+              >
+                Slot
+              </Checkbox>
+            </div>
+            {slot && !occupancy && (
+              <div className="mt-4">
+                <Input
+                  type="number"
+                  radius="sm"
+                  min={1}
+                  variant="underlined"
+                  color={"primary"}
+                  label="Capacity"
+                  value={slotCapacity.toString()}
+                  onChange={(e) => {
+                    const updatedSlotCapacity = parseInt(e.target.value);
+                    handleCapacityChange({
+                      ...serviceCapacity,
+                      capacityBySlot: updatedSlotCapacity,
+                    });
+                  }}
+                />
+              </div>
+            )}
+            {occupancy && !slot && (
+              <div className=" mt-6">
+                <div className="basis-3/4 flex gap-16 justify-start">
+                  <Checkbox
+                    id="shared"
+                    isSelected={shared}
+                    onValueChange={(val) => {
+                      setShared(val);
+                    }}
+                  >
+                    Shared
+                  </Checkbox>
+                  <Checkbox
+                    id="solo"
+                    isSelected={solo}
+                    onValueChange={(val) => {
+                      setSolo(val);
+                    }}
+                  >
+                    Solo
+                  </Checkbox>
+                </div>
+                <div className="grid grid-cols-2 gap-8">
+                  {shared && (
+                    <div className="flex flex-col">
+                      <div className="mt-4">
+                        <Input
+                          type="number"
+                          radius="sm"
+                          variant="underlined"
+                          color={"primary"}
+                          label="sm & md"
+                          value={smAndMdCapacity.toString()}
+                          onChange={(el) => {
+                    if(Number(el.target.value) < 1) {
+                      setSmAndMdCapacity(1);
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity: serviceCapacity,
+                        selected: isSelected
+                      })
+                    } else {
+                      setSmAndMdCapacity(Number(el.target.value));
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity : serviceCapacity,
+                        selected: isSelected
+                      })
+                    }
+                  }}
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <Input
+                          type="number"
+                          radius="sm"
+                          variant="underlined"
+                          color={"primary"}
+                          label="lg & xl"
+                          value={lgAndXlCapacity.toString()}
+                          onChange={(el) => {
+                    if(Number(el.target.value) < 1) {
+                      setLgAndXlCapacity(1);
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity: serviceCapacity,
+                        selected: isSelected
+                      })
+                    } else {
+                      setLgAndXlCapacity(Number(el.target.value));
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity : serviceCapacity,
+                        selected: isSelected
+                      })
+                    }
+                  }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {solo && (
+                    <div className="mt-4">
+                      <Input
+                        type="number"
+                        radius="sm"
+                        variant="underlined"
+                        color={"primary"}
+                        label="solo"
+                        value={soloCapacity.toString()}
+                       onChange={(el) => {
+                    if(Number(el.target.value) < 1) {
+                      setSlotCapacity(1);
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity: serviceCapacity,
+                        selected: isSelected
+                      })
+                    } else {
+                      setSoloCapacity(Number(el.target.value));
+                      retData({
+                        id: serviceData.id,
+                        serviceCapacity : serviceCapacity,
+                        selected: isSelected
+                      })
+                    }
+                  }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        {/* <Input
+                    className="w-[100px] bg-transparent"
+                    min={1}
+                    type="number"
+                    variant="underlined"
+                    color={"primary"}
+                    value={capacity.toString()}
+                    onChange={(e) => {
+                        if (Number(e.target.value) < 1) {
+                            setCapacity(1);
+                            retData(
+                                {
+                                    id: serviceData.id,
+                                    capacity: 1,
+                                    selected: isSelected
+                                }
+                            )
+                        } else {
+                            setCapacity(Number(e.target.value));
+                            retData(
+                                {
+                                    id: serviceData.id,
+                                    capacity: Number(e.target.value),
+                                    selected: isSelected
+                                }
+                            )
+                        }
+                    }}
+                >
+                </Input> */}
+      </div>
+    </div>
+  );
+};
